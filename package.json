@@ -1,7 +1,7 @@
 {
-  "name": "helioslauncher",
+  "name": "pokebaglauncher",
   "version": "2.2.1",
-  "productName": "Helios Launcher",
+  "productName": "PokeBag Launcher",
   "description": "Modded Minecraft Launcher",
   "author": "Daniel Scalzi (https://github.com/dscalzi/)",
   "license": "UNLICENSED",
