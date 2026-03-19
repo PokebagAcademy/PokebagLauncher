@@ -3037,7 +3037,7 @@ input:checked + .toggleSwitchSlider:before {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 27px;
+    height: 37px;
 }
 
 /* Divider bar between the external and internal icons. */
@@ -3051,16 +3051,15 @@ input:checked + .toggleSwitchSlider:before {
 /* Social media icon shared styles. */
 .mediaSVG {
     fill: #ffffff;
-    height: 12px;
+    height: 22px;
     transition: 0.25s ease;
     cursor: pointer;
-    height: 12px;
-    width: 25px;
+    width: 35px;
 }
 .mediaSVG:hover,
 .mediaURL:focus .mediaSVG,
 .mediaSVG:active {
-    height: 20px;
+    height: 30px;
 }
 
 /* Social media URL shared styles. */
@@ -3127,32 +3126,22 @@ input:checked + .toggleSwitchSlider:before {
     transition-delay:0s;
 }
 
-/* X icon colors. */
-#xSVG:hover,
-#xURL:focus #xSVG {
-    fill: #000000;
+/* Boutique icon colors. */
+#boutiqueSVG:hover,
+#boutiqueURL:focus #boutiqueSVG {
+    fill: #f39c12;
 }
-#xSVG:active {
-    fill: #090909;
-}
-
-/* Instagram icon colors. */
-#instagramSVG:hover,
-#instagramURL:focus #instagramSVG {
-    fill: url('#instaFill')
-    /*fill: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); */
-}
-#instagramSVG:active {
-    fill: url('#instaFill')
+#boutiqueSVG:active {
+    fill: #d35400;
 }
 
-/* Youtube icon colors. */
-#youtubeSVG:hover,
-#youtubeURL:focus #youtubeSVG {
-    fill: #f00;
+/* TikTok icon colors. */
+#tiktokSVG:hover,
+#tiktokURL:focus #tiktokSVG {
+    fill: #ff0050;
 }
-#youtubeSVG:active {
-    fill: #ea0202;
+#tiktokSVG:active {
+    fill: #00f2ea;
 }
 
 /* Discord icon colors. */

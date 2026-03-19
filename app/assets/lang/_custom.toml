@@ -4,11 +4,11 @@
 title = "PokeBag Launcher"
 
 [ejs.landing]
-mediaGitHubURL = "https://github.com/dscalzi/HeliosLauncher"
-mediaXURL = "#"
-mediaInstagramURL = "#"
-mediaYouTubeURL = "#"
-mediaDiscordURL = "https://discord.gg/zNWUXdt"
+mediaWebsiteURL = "https://pokebag.fr/"
+mediaBoutiqueURL = "https://pokebag.fr/shop/categories/gems"
+mediaTikTokURL = "https://www.tiktok.com/@pokebag_academy"
+mediaDiscordURL = "https://discord.gg/rUsbKeBd9w"
+
 
 [ejs.settings]
 sourceGithubLink = "https://github.com/dscalZi/HeliosLauncher"
