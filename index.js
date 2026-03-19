@@ -130,7 +130,7 @@ ipcMain.on(MSFT_OPCODE.OPEN_LOGIN, (ipcEvent, ...arguments_) => {
         width: 520,
         height: 600,
         frame: true,
-        icon: getPlatformIcon('SealCircle')
+        icon: getPlatformIcon('PkeBag_Academy_text')
     })
 
     msftAuthWindow.on('closed', () => {
@@ -181,7 +181,7 @@ ipcMain.on(MSFT_OPCODE.OPEN_LOGOUT, (ipcEvent, uuid, isLastAccount) => {
         width: 520,
         height: 600,
         frame: true,
-        icon: getPlatformIcon('SealCircle')
+        icon: getPlatformIcon('PkeBag_Academy_text')
     })
 
     msftLogoutWindow.on('closed', () => {
@@ -227,7 +227,7 @@ function createWindow() {
     win = new BrowserWindow({
         width: 980,
         height: 552,
-        icon: getPlatformIcon('SealCircle'),
+        icon: getPlatformIcon('PkeBag_Academy_text'),
         frame: false,
         webPreferences: {
             preload: path.join(__dirname, 'app', 'assets', 'js', 'preloader.js'),
@@ -239,7 +239,12 @@ function createWindow() {
     remoteMain.enable(win.webContents)
 
     const data = {
-        bkid: Math.floor((Math.random() * fs.readdirSync(path.join(__dirname, 'app', 'assets', 'images', 'backgrounds')).length)),
+        bkid: (() => {
+            const files = fs.readdirSync(path.join(__dirname, 'app', 'assets', 'images', 'backgrounds'))
+                .filter(file => file.toLowerCase().startsWith('image') && file.toLowerCase().endsWith('.png'))
+            const selected = files.length > 0 ? files[Math.floor(Math.random() * files.length)] : 'Image.png'
+            return path.parse(selected).name
+        })(),
         lang: (str, placeHolders) => LangLoader.queryEJS(str, placeHolders)
     }
     Object.entries(data).forEach(([key, val]) => ejse.data(key, val))
