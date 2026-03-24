@@ -711,7 +711,7 @@ async function resolveModsForUI(){
 
     const modStr = parseModulesForUI(distro.getServerById(serv).modules, false, servConf.mods)
 
-    document.getElementById('settingsReqModsContent').innerHTML = modStr.reqMods
+    // document.getElementById('settingsReqModsContent').innerHTML = modStr.reqMods
     document.getElementById('settingsOptModsContent').innerHTML = modStr.optMods
 }
 
