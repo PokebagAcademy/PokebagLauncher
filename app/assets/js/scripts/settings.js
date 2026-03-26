@@ -1366,11 +1366,34 @@ function bindMinMaxRam(server) {
     const SETTINGS_MAX_MEMORY = ConfigManager.getAbsoluteMaxRAM(server.rawServer.javaOptions?.ram)
     const SETTINGS_MIN_MEMORY = ConfigManager.getAbsoluteMinRAM(server.rawServer.javaOptions?.ram)
 
+    // Enforce a minimum of 6GB for UI sliders and set default max to 8GB.
+    const ENFORCED_MIN_GB = 6
+    const DEFAULT_MAX_GB = 8
+
+    const enforcedMin = Math.max(SETTINGS_MIN_MEMORY, ENFORCED_MIN_GB)
+    // Ensure max is at least the enforced min and the default max.
+    const enforcedMax = Math.max(SETTINGS_MAX_MEMORY, enforcedMin, DEFAULT_MAX_GB)
+
     // Set the max and min values for the ranged sliders.
-    settingsMaxRAMRange.setAttribute('max', SETTINGS_MAX_MEMORY)
-    settingsMaxRAMRange.setAttribute('min', SETTINGS_MIN_MEMORY)
-    settingsMinRAMRange.setAttribute('max', SETTINGS_MAX_MEMORY)
-    settingsMinRAMRange.setAttribute('min', SETTINGS_MIN_MEMORY)
+    settingsMaxRAMRange.setAttribute('max', enforcedMax)
+    settingsMaxRAMRange.setAttribute('min', enforcedMin)
+    settingsMinRAMRange.setAttribute('max', enforcedMax)
+    settingsMinRAMRange.setAttribute('min', enforcedMin)
+
+    // Ensure starting values: do not allow values below enforced min; default max value to DEFAULT_MAX_GB
+    const curMinVal = Number(settingsMinRAMRange.getAttribute('value'))
+    if(isNaN(curMinVal) || curMinVal < enforcedMin){
+        settingsMinRAMRange.setAttribute('value', enforcedMin)
+        settingsMinRAMLabel.innerHTML = enforcedMin.toFixed(1) + 'G'
+    }
+
+    const curMaxVal = Number(settingsMaxRAMRange.getAttribute('value'))
+    // Only set default max if no meaningful saved value exists or it's below the default.
+    if(isNaN(curMaxVal) || curMaxVal < DEFAULT_MAX_GB){
+        const defaultMaxToSet = Math.min(enforcedMax, DEFAULT_MAX_GB)
+        settingsMaxRAMRange.setAttribute('value', defaultMaxToSet)
+        settingsMaxRAMLabel.innerHTML = defaultMaxToSet.toFixed(1) + 'G'
+    }
 }
 
 /**
