@@ -51,11 +51,41 @@ const loggerLanding = LoggerUtil.getLogger('Landing')
  */
 function toggleLaunchArea(loading){
     if(loading){
+        // Position the launch details where the launch button currently is.
+        try {
+            const btn = document.getElementById('launch_button')
+            const container = document.getElementById('landingContainer')
+            const btnRect = btn.getBoundingClientRect()
+            const containerRect = container.getBoundingClientRect()
+
+            // Compute coordinates relative to landing container.
+            const left = btnRect.left - containerRect.left
+            const top = btnRect.top - containerRect.top
+
+            launch_details.style.position = 'absolute'
+            launch_details.style.left = left + 'px'
+            // place slightly above the button to align visually
+            launch_details.style.top = (top - 10) + 'px'
+            launch_details.style.zIndex = 700
+            // Match width to the launch content area for a neat transition.
+            launch_details.style.width = launch_content.getBoundingClientRect().width + 'px'
+        } catch (err) {
+            // Fallback to default if positioning calculation fails.
+            launch_details.style.position = 'relative'
+            launch_details.style.top = '25px'
+        }
+
         launch_details.style.display = 'flex'
         launch_content.style.display = 'none'
     } else {
+        // Restore default layout values.
         launch_details.style.display = 'none'
         launch_content.style.display = 'inline-flex'
+        launch_details.style.position = 'relative'
+        launch_details.style.left = ''
+        launch_details.style.top = '25px'
+        launch_details.style.width = ''
+        launch_details.style.zIndex = ''
     }
 }
 
