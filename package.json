@@ -1,9 +1,9 @@
 {
   "name": "pokebaglauncher",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "productName": "PokeBag Launcher",
   "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
+  "author": "Crabe (https://github.com/LucasLhomme)",
   "license": "UNLICENSED",
   "homepage": "https://github.com/PokebagAcademy/PokebagLauncher",
   "bugs": {
