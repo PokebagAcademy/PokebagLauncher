@@ -49,6 +49,25 @@
                 </div>
             </div>
 
+            <div class="settingsAuthAccountTypeContainer">
+                <div class="settingsAuthAccountTypeHeader">
+                    <div class="settingsAuthAccountTypeHeaderLeft">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 10px;">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span><%- lang('settings.offlineAccount') %></span>
+                    </div>
+                    <div class="settingsAuthAccountTypeHeaderRight">
+                        <button class="settingsAddAuthAccount" id="settingsAddOfflineAccount"><%- lang('settings.addOfflineAccount') %></button>
+                    </div>
+                </div>
+                
+                <div class="settingsCurrentAccounts" id="settingsCurrentOfflineAccounts">
+                    <!-- Offline auth accounts populated here. -->
+                </div>
+            </div>
+
         </div>
         <div id="settingsTabMinecraft" class="settingsTab" style="display: none;">
             <div class="settingsTabHeader">

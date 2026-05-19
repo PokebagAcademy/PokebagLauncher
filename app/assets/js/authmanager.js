@@ -167,6 +167,23 @@ exports.addMojangAccount = async function(username, password) {
     }
 }
 
+/**
+ * Add an offline (crack) account.
+ * 
+ * @param {string} username The offline account username.
+ * @returns {Promise.<Object>} Promise which resolves the resolved authenticated account object.
+ */
+exports.addOfflineAccount = async function(username) {
+    try {
+        const ret = ConfigManager.addOfflineAuthAccount(username)
+        ConfigManager.save()
+        return ret
+    } catch (err) {
+        log.error(err)
+        return Promise.reject(Lang.queryJS('login.error.unknown'))
+    }
+}
+
 const AUTH_MODE = { FULL: 0, MS_REFRESH: 1, MC_REFRESH: 2 }
 
 /**
@@ -310,6 +327,23 @@ exports.removeMicrosoftAccount = async function(uuid){
 }
 
 /**
+ * Remove an offline account.
+ * 
+ * @param {string} uuid The UUID of the account to be removed.
+ * @returns {Promise.<void>} Promise which resolves to void when the action is complete.
+ */
+exports.removeOfflineAccount = async function(uuid){
+    try {
+        ConfigManager.removeAuthAccount(uuid)
+        ConfigManager.save()
+        return Promise.resolve()
+    } catch (err){
+        log.error('Error while removing account', err)
+        return Promise.reject(err)
+    }
+}
+
+/**
  * Validate the selected account with Mojang's authserver. If the account is not valid,
  * we will attempt to refresh the access token and update that value. If that fails, a
  * new login will be required.
@@ -416,7 +450,9 @@ async function validateSelectedMicrosoftAccount(){
 exports.validateSelected = async function(){
     const current = ConfigManager.getSelectedAccount()
 
-    if(current.type === 'microsoft') {
+    if(current.type === 'offline') {
+        return true
+    } else if(current.type === 'microsoft') {
         return await validateSelectedMicrosoftAccount()
     } else {
         return await validateSelectedMojangAccount()

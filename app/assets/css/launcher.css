@@ -3972,3 +3972,159 @@ input:checked + .toggleSwitchSlider:before {
 .rotating {
     animation: rotating 10s linear infinite;
 }
+
+/*******************************************************************************
+ *                                                                             *
+ * Offline Login View (offlineLogin.ejs overrides & fixes)                    *
+ *                                                                             *
+ ******************************************************************************/
+
+#offlineLoginContainer {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    transition: filter 0.25s ease;
+    background: rgba(0, 0, 0, 0.50);
+}
+
+#offlineLoginCancelContainer {
+    position: absolute;
+    top: 5%;
+    right: 5%;
+}
+
+#offlineLoginCancelButton {
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+#offlineLoginCancelButton:hover #loginCancelIcon,
+#offlineLoginCancelButton:hover #loginCancelText,
+#offlineLoginCancelButton:focus #loginCancelIcon,
+#offlineLoginCancelButton:focus #loginCancelText {
+    text-shadow: 0px 0px 20px white;
+}
+#offlineLoginCancelButton:hover #loginCancelIcon,
+#offlineLoginCancelButton:focus #loginCancelIcon {
+    box-shadow: 0px 0px 20px white;
+}
+#offlineLoginCancelButton:active #loginCancelIcon,
+#offlineLoginCancelButton:active #loginCancelText {
+    text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.75);
+    border-color: rgba(255, 255, 255, 0.75);
+}
+#offlineLoginCancelButton:active #loginCancelIcon {
+    box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.75);
+}
+#offlineLoginCancelButton:disabled {
+    pointer-events: none;
+}
+#offlineLoginCancelButton:disabled #loginCancelIcon,
+#offlineLoginCancelButton:disabled #loginCancelText {
+    color: rgba(255, 255, 255, 0.75);
+    border-color: rgba(255, 255, 255, 0.75);
+}
+
+#offlineLoginForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#offlineLoginSubheader {
+    font-family: 'Avenir Medium';
+    margin-top: 10px;
+    margin-bottom: 25px;
+    font-size: 15px;
+    letter-spacing: 1.5px;
+    font-weight: bold;
+    color: #ffffff;
+    text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+}
+
+#offlineLoginUsername {
+    width: 280px;
+    font-size: 14px;
+    padding: 10px 15px;
+    border-width: 0px 0px 2px 0px !important;
+    border-color: rgba(255, 255, 255, 0.85) !important;
+    color: #ffffff;
+    letter-spacing: 1.5px;
+    margin-bottom: 25px;
+}
+
+#offlineLoginUsername::-webkit-input-placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+#offlineLoginButton {
+    background: none;
+    font-weight: bold;
+    letter-spacing: 2px;
+    border: none;
+    padding: 15px 5px;
+    margin: 10px 0px;
+    cursor: pointer;
+    position: relative;
+    right: -20px;
+    transition: 0.5s ease;
+}
+#offlineLoginButton:disabled {
+    color: rgba(255, 255, 255, 0.75);
+    pointer-events: none;
+}
+#offlineLoginButton[loading] {
+    color: #fff;
+}
+#offlineLoginButton:hover,
+#offlineLoginButton:focus {
+    text-shadow: 0px 0px 20px #fff;
+    outline: none;
+}
+#offlineLoginButton:active {
+    color: #c7c7c7;
+    text-shadow:  0px 0px 20px #c7c7c7;
+}
+#offlineLoginButton:hover #loginSVG,
+#offlineLoginButton:focus #loginSVG {
+    -webkit-filter: drop-shadow(0px 0px 2px #fff);
+}
+#offlineLoginButton:active #loginSVG .arrowLine {
+    stroke: #c7c7c7;
+}
+#offlineLoginButton:active #loginSVG {
+    -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
+}
+#offlineLoginButton:disabled #loginSVG .arrowLine {
+    stroke: rgba(255, 255, 255, 0.75);
+}
+
+#offlineLoginButton .circle-loader,
+#offlineLoginButton[loading] #loginSVG {
+    display: none;
+}
+#offlineLoginButton[loading] .circle-loader,
+#offlineLoginButton #loginSVG {
+    display: initial;
+}
+
+/* Fix squished logo seal on both login forms */
+#loginImageSeal {
+    height: auto !important;
+    max-height: 90px;
+    width: 220px;
+    object-fit: contain;
+    background: none !important;
+    box-shadow: none !important;
+    margin-bottom: 25px;
+}

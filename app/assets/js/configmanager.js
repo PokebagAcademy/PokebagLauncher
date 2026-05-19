@@ -349,6 +349,35 @@ exports.addMojangAuthAccount = function(uuid, accessToken, username, displayName
     return config.authenticationDatabase[uuid]
 }
 
+function getOfflineUUID(username) {
+    const crypto = require('crypto')
+    const hash = crypto.createHash('md5').update('OfflinePlayer:' + username).digest()
+    hash[6] = (hash[6] & 0x0f) | 0x30 // UUID v3 (MD5)
+    hash[8] = (hash[8] & 0x3f) | 0x80 // RFC 4122 variant
+    const hex = hash.toString('hex')
+    return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`
+}
+
+/**
+ * Adds an offline (crack) account to the database to be stored.
+ * 
+ * @param {string} username The username of the offline account.
+ * 
+ * @returns {Object} The authenticated account object created by this action.
+ */
+exports.addOfflineAuthAccount = function(username) {
+    const uuid = getOfflineUUID(username)
+    config.selectedAccount = uuid
+    config.authenticationDatabase[uuid] = {
+        type: 'offline',
+        accessToken: 'offline',
+        username: username.trim(),
+        uuid: uuid,
+        displayName: username.trim()
+    }
+    return config.authenticationDatabase[uuid]
+}
+
 /**
  * Update the tokens of an authenticated microsoft account.
  * 

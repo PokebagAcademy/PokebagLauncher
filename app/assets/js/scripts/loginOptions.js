@@ -1,5 +1,6 @@
 const loginOptionsCancelContainer = document.getElementById('loginOptionCancelContainer')
 const loginOptionMicrosoft = document.getElementById('loginOptionMicrosoft')
+const loginOptionCrack = document.getElementById('loginOptionCrack')
 const loginOptionsCancelButton = document.getElementById('loginOptionCancelButton')
 
 let loginOptionsCancellable = false
@@ -24,6 +25,14 @@ loginOptionMicrosoft.onclick = (e) => {
             loginOptionsViewOnLoginSuccess,
             loginOptionsViewOnLoginCancel
         )
+    })
+}
+
+loginOptionCrack.onclick = (e) => {
+    switchView(getCurrentView(), VIEWS.offlineLogin, 500, 500, () => {
+        offlineLoginViewOnSuccess = loginOptionsViewOnLoginSuccess
+        offlineLoginViewOnCancel = loginOptionsViewOnLoginCancel
+        offlineLoginCancelEnabled(true)
     })
 }
 
