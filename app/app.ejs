@@ -4,18 +4,31 @@
     <title><%= lang('app.title') %></title>
     <script src="./assets/js/scripts/uicore.js"></script>
     <script src="./assets/js/scripts/uibinder.js"></script>
+    <script src="./assets/js/scripts/sfx.js"></script>
     <link type="text/css" rel="stylesheet" href="./assets/css/launcher.css">
     <style>
         body {
-            background: url('assets/images/backgrounds/<%=bkid%>.png') no-repeat center center fixed;
-            transition: background-image 1s ease;
-            background-size: cover;
+            background-color: #171614;
             -webkit-user-select: none;
+        }
+        /* Background lives in its own layer so a clarity/vividness filter
+           can be applied to the photo without blurring text or UI on top. */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background-image: var(--bg-image, url('assets/images/backgrounds/<%=bkid%>.png'));
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            transition: background-image 1s ease;
+            filter: contrast(1.1) saturate(1.25) brightness(1.04);
         }
         #main {
             display: none;
             height: calc(100% - 22px);
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 100%);
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0) 100%);
             width: 100%;
             position: absolute;
             z-index: 10;
@@ -40,7 +53,7 @@
     <div id="loadingContainer">
         <div id="loadingContent">
             <div id="loadSpinnerContainer">
-                <img id="loadCenterImage" src="assets/images/small-logo.png">
+                <img id="loadCenterImage" src="assets/images/load.png">
             </div>
         </div>
     </div>

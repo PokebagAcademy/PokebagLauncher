@@ -1,7 +1,7 @@
 # Custom Language File for Launcher Customizer
 
 [ejs.app]
-title = "PokeBag Launcher"
+title = "CobbleHub"
 
 [ejs.landing]
 mediaWebsiteURL = "https://pokebag.fr/"

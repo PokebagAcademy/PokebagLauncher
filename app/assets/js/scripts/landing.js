@@ -54,13 +54,16 @@ function toggleLaunchArea(loading){
         // Position the launch details where the launch button currently is.
         try {
             const btn = document.getElementById('launch_button')
-            const container = document.getElementById('landingContainer')
+            // #launch_details' nearest positioned ancestor is #center (not
+            // #landingContainer), since #center itself has position:relative.
+            // Coordinates must be computed relative to that real containing
+            // block, otherwise the bar renders offset from the button.
+            const offsetParent = launch_content.offsetParent || document.getElementById('landingContainer')
             const btnRect = btn.getBoundingClientRect()
-            const containerRect = container.getBoundingClientRect()
+            const parentRect = offsetParent.getBoundingClientRect()
 
-            // Compute coordinates relative to landing container.
-            const left = btnRect.left - containerRect.left
-            const top = btnRect.top - containerRect.top
+            const left = btnRect.left - parentRect.left
+            const top = btnRect.top - parentRect.top
 
             launch_details.style.position = 'absolute'
             launch_details.style.left = left + 'px'
@@ -206,6 +209,19 @@ server_selection_button.onclick = async e => {
     await toggleServerSelection(true)
 }
 
+// Quit button with confirmation dialog.
+const quit_button = document.getElementById('quit_button')
+quit_button.onclick = e => {
+    e.target.blur()
+    toggleOverlay(true, false, 'quitConfirmContent')
+    document.getElementById('quitConfirmYes').onclick = () => {
+        remote.app.quit()
+    }
+    document.getElementById('quitConfirmNo').onclick = () => {
+        toggleOverlay(false)
+    }
+}
+
 // Update Mojang Status Color
 const refreshMojangStatuses = async function(){
     loggerLanding.info('Refreshing Mojang Statuses..')
@@ -260,9 +276,12 @@ const refreshMojangStatuses = async function(){
         }
     }
     
-    document.getElementById('mojangStatusEssentialContainer').innerHTML = tooltipEssentialHTML
-    document.getElementById('mojangStatusNonEssentialContainer').innerHTML = tooltipNonEssentialHTML
-    document.getElementById('mojang_status_icon').style.color = MojangRestAPI.statusToHex(status)
+    const essentialContainer = document.getElementById('mojangStatusEssentialContainer')
+    const nonEssentialContainer = document.getElementById('mojangStatusNonEssentialContainer')
+    const statusIcon = document.getElementById('mojang_status_icon')
+    if(essentialContainer != null) essentialContainer.innerHTML = tooltipEssentialHTML
+    if(nonEssentialContainer != null) nonEssentialContainer.innerHTML = tooltipNonEssentialHTML
+    if(statusIcon != null) statusIcon.style.color = MojangRestAPI.statusToHex(status)
 }
 
 const refreshServerStatus = async (fade = false) => {
