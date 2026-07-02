@@ -3025,12 +3025,13 @@ input:checked + .toggleSwitchSlider:before {
 /* User profile avatar container. */
 #avatarContainer {
     border-radius: 50%;
-    border: 2px solid #cad7e1;
+    border: 2px solid rgba(255, 255, 255, 0.55);
     box-sizing: border-box;
     background: rgba(1, 2, 1, 0.5);
     height: 70px;
     width: 70px;
-    box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
+    box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.45);
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
     overflow: hidden;
     position: relative;
     background-position: center;
@@ -3095,48 +3096,92 @@ input:checked + .toggleSwitchSlider:before {
     flex-direction: column;
 }
 
-/* Container object which wraps an icon to ensure fluid transitions. */
+/* Container object which wraps an icon. Restyled as a frosted pastel card
+   to match the in-game menu's rounded card DA. Each icon gets its own
+   pastel accent (--accent) used on hover for the border/glow/icon color. */
 .mediaContainer {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 37px;
+    width: 36px;
+    height: 36px;
+    margin: 3px 0px;
+    border-radius: 10px;
+    /* Darker frosted glass so the card stays legible on both bright (sky)
+       and dark backgrounds, rather than vanishing on light photos. */
+    background: rgba(18, 18, 24, 0.34);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    -webkit-backdrop-filter: blur(7px);
+    backdrop-filter: blur(7px);
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.32);
+    transition: transform 0.18s ease, background 0.18s ease,
+                border-color 0.18s ease, box-shadow 0.18s ease;
+    position: relative;
+    box-sizing: border-box;
 }
+.mediaContainer:hover {
+    transform: translateY(-2px);
+    background: rgba(18, 18, 24, 0.5);
+    border-color: var(--accent, #ffffff);
+    box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.4),
+                0px 0px 14px -2px var(--accent, rgba(255, 255, 255, 0.4));
+}
+.mediaContainer:active {
+    transform: translateY(0px) scale(0.96);
+}
+
+/* Per-icon pastel accents (mirrors the in-game palette). */
+#settingsMediaContainer            { --accent: #f2a8c4; }
+#sfxMediaContainer                 { --accent: #8fdbc4; }
+.mediaContainer:has(#linkURL)      { --accent: #8fc9ef; }
+.mediaContainer:has(#boutiqueURL)  { --accent: #6ec6c0; }
+.mediaContainer:has(#discordURL)   { --accent: #8a9ef0; }
+.mediaContainer:has(#tiktokURL)    { --accent: #ff5c8a; }
 
 /* Divider bar between the external and internal icons. */
 .mediaDivider {
     height: 1px;
-    width: 14px;
-    background: rgb(255, 255, 255);
-    margin: 10px 0px;
+    width: 26px;
+    background: rgba(255, 255, 255, 0.35);
+    margin: 8px 0px;
 }
 
 /* Social media icon shared styles. */
 .mediaSVG {
     fill: #ffffff;
-    height: 22px;
-    transition: 0.25s ease;
+    height: 20px;
+    transition: fill 0.18s ease, stroke 0.18s ease;
     cursor: pointer;
-    width: 35px;
+    width: 24px;
 }
-.mediaSVG:hover,
-.mediaURL:focus .mediaSVG,
-.mediaSVG:active {
-    height: 30px;
+.mediaContainer:hover .mediaSVG {
+    fill: var(--accent, #ffffff);
 }
 
-/* Social media URL shared styles. */
+/* Social media URL shared styles: fill the whole card so the click target
+   matches the card, not just the glyph. */
 .mediaURL {
     outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
 }
 
-/* Internal media button shared styles. */
+/* Internal media button shared styles: also fills the whole card. */
 .mediaButton {
     background: none;
     border: none;
     padding: 0px;
     display: flex;
     align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    cursor: pointer;
     outline: none;
 }
 
@@ -3144,15 +3189,14 @@ input:checked + .toggleSwitchSlider:before {
     position: relative;
 }
 
-/* Settings icon colors. */
+/* Settings icon colors. The gear is a solid silhouette, so it must be
+   filled (not just stroked) — otherwise its interior shows the dark card
+   through it. Hover color comes from the generic .mediaSVG fill rule. */
 #settingsSVG {
-    stroke: #ffffff;
-    height: 15px;
-}
-.mediaButton:hover #settingsSVG,
-.mediaButton:focus #settingsSVG,
-.mediaButton:active #settingsSVG {
-    height: 23px;
+    fill: #ffffff;
+    stroke: none;
+    height: 20px;
+    transition: fill 0.18s ease;
 }
 
 /* Settings tooltip styles. */
@@ -3189,24 +3233,17 @@ input:checked + .toggleSwitchSlider:before {
     transition-delay:0s;
 }
 
-#sfxMediaContainer {
-    position: relative;
-    margin-top: 12px;
-}
-
 /* Sound toggle icon colors (stroke-based, overrides the fill:#ffffff from
    .mediaSVG since this icon is a hollow speaker glyph, not a solid shape). */
 #sfxSVG {
     fill: none;
     stroke: #ffffff;
-    height: 15px;
-    width: 15px;
+    height: 19px;
+    width: 19px;
+    transition: stroke 0.18s ease;
 }
-.mediaButton:hover #sfxSVG,
-.mediaButton:focus #sfxSVG,
-.mediaButton:active #sfxSVG {
-    height: 20px;
-    width: 20px;
+.mediaContainer:hover #sfxSVG {
+    stroke: var(--accent, #ffffff);
 }
 #sfxToggleButton.sfx-muted #sfxSVG {
     stroke: #e57373;
@@ -3246,32 +3283,9 @@ input:checked + .toggleSwitchSlider:before {
     transition-delay:0s;
 }
 
-/* Boutique icon colors. */
-#boutiqueSVG:hover,
-#boutiqueURL:focus #boutiqueSVG {
-    fill: #f39c12;
-}
-#boutiqueSVG:active {
-    fill: #d35400;
-}
-
-/* TikTok icon colors. */
-#tiktokSVG:hover,
-#tiktokURL:focus #tiktokSVG {
-    fill: #ff0050;
-}
-#tiktokSVG:active {
-    fill: #00f2ea;
-}
-
-/* Discord icon colors. */
-#discordSVG:hover,
-#discordURL:focus #discordSVG {
-    fill: #7288d9;
-}
-#discordSVG:active {
-    fill: #657ac4;
-}
+/* Per-icon hover colors are now driven by each card's --accent
+   (see .mediaContainer:hover .mediaSVG above), which keeps the whole
+   icon column consistent with the in-game pastel card palette. */
 
 /*******************************************************************************
  *                                                                             *
@@ -3307,7 +3321,11 @@ input:checked + .toggleSwitchSlider:before {
     align-items: center;
     width: auto;
     white-space: nowrap;
-    background: rgba(0, 0, 0, 0.35);
+    background: rgba(255, 255, 255, 0.09);
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.28);
     border-radius: 12px;
     padding: 6px 14px;
 }
@@ -3534,16 +3552,39 @@ input:checked + .toggleSwitchSlider:before {
     opacity: 0.6;
 }
 
-/* Launch details main container, hidden until launch processing begins. */
+/* Launch details main container, hidden until launch processing begins.
+   Wrapped as a frosted glass pill so the progress readout matches the
+   icon cards / server chip DA instead of floating over the background. */
 #launch_details {
-    position: relative;
-    top: 25px;
+    /* Normal-flow inline pill that shrinks to its content; #center's flexbox
+       centers it exactly where the play button was (the JS no longer forces
+       an absolute position or width). */
     display: none;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    padding: 8px 20px;
+    border-radius: 14px;
+    background: rgba(18, 18, 24, 0.34);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    -webkit-backdrop-filter: blur(7px);
+    backdrop-filter: blur(7px);
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.32);
+    box-sizing: border-box;
 }
- 
+
 /* Left side of launch details container, displays percentage and a divider. */
 #launch_details_left {
     display: flex;
+    align-items: center;
+}
+
+/* Tighter divider inside the download pill so the label and progress sit
+   as a compact centered group rather than spread across the card. */
+#launch_details .bot_divider {
+    height: 20px;
+    margin-left: 12px;
+    margin-right: 12px;
 }
 
 /* Span which displays percentage complete. */
