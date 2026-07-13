@@ -2478,7 +2478,10 @@ input:checked + .toggleSwitchSlider:before {
 #landingContainer > #lower {
     height: 23%;
     display: flex;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+    /* Light scrim only, now that the play button is a small pill rather
+       than a full-width coral card: keeps status text/quit button legible
+       against the busy beach photo without muddying the pill's colors. */
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0));
 }
 #landingContainer > #lower > #left {
     position: relative;
@@ -2487,14 +2490,15 @@ input:checked + .toggleSwitchSlider:before {
     height: 100%;
     width: 33%;
     display: inline-flex;
-    justify-content: center;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 25px;
+    box-sizing: border-box;
 }
 #landingContainer > #lower > #left #content {
     position: relative;
-    top: 25px;
     display: inline-flex;
     line-height: 24px;
-    left: 50px;
 }
 #landingContainer > #lower > #center {
     position: relative;
@@ -2504,12 +2508,13 @@ input:checked + .toggleSwitchSlider:before {
     width: 34%;
     display: inline-flex;
     justify-content: center;
+    align-items: center;
 }
 #landingContainer > #lower > #center #content {
     position: absolute; /* keep news at fixed vertical position regardless of play above */
     z-index: 500;
     transition: top 0.25s ease;
-    top: 25px; /* align with left server_status */
+    top: 50px; /* cleared to sit below the taller play card */
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -2523,6 +2528,36 @@ input:checked + .toggleSwitchSlider:before {
     height: 100%;
     width: 33%;
     display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    /* Matches the avatar's right inset (#upper > #right) so the quit
+       button's right edge lines up exactly with the avatar's right edge. */
+    padding-right: 80px;
+    box-sizing: border-box;
+}
+
+/* Quit button (bottom right of landing screen). Uses a tightly-cropped
+   version of the art (the source PNG had a large asymmetric transparent
+   margin that made the icon look off-center in the button box). */
+#quit_button {
+    background: url('../images/btn_quit_0_cropped.png') no-repeat center center;
+    background-size: contain;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    width: 70px;
+    height: 76px;
+    padding: 0px;
+    transition: 0.15s ease;
+    filter: drop-shadow(0px 4px 10px rgba(0, 0, 0, 0.4));
+}
+#quit_button:hover,
+#quit_button:focus {
+    background-image: url('../images/btn_quit_1_cropped.png');
+    transform: scale(1.05);
+}
+#quit_button:active {
+    transform: scale(0.97);
 }
 
 /*******************************************************************************
@@ -2854,19 +2889,24 @@ input:checked + .toggleSwitchSlider:before {
 * Landing View (Top Styles) | Left Content
 * * */
 
-/* Logo image. */
+/* Brand wordmark (dec_brand_small.png), wide aspect ratio. */
 #image_seal {
-    height: 140px;
-    width: auto;
+    height: auto;
+    width: 165px;
     position: relative;
+    filter: drop-shadow(0px 2px 6px rgba(0, 0, 0, 0.5));
 }
 
-/* Logo container styles. */
+/* Logo container styles. Matches #rightContainer's top:50px offset and
+   the 70px avatar height so the wordmark and avatar sit on the same
+   horizontal line. */
 #image_seal_container {
     position: relative;
+    display: flex;
+    align-items: center;
     height: 70px;
-    width: 70px;
-    margin-top: 10px;
+    width: 165px;
+    margin-top: 50px;
     margin-left: 25px;
 }
 
@@ -2985,12 +3025,13 @@ input:checked + .toggleSwitchSlider:before {
 /* User profile avatar container. */
 #avatarContainer {
     border-radius: 50%;
-    border: 2px solid #cad7e1;
+    border: 2px solid rgba(255, 255, 255, 0.55);
     box-sizing: border-box;
     background: rgba(1, 2, 1, 0.5);
     height: 70px;
     width: 70px;
-    box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
+    box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.45);
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
     overflow: hidden;
     position: relative;
     background-position: center;
@@ -3055,48 +3096,92 @@ input:checked + .toggleSwitchSlider:before {
     flex-direction: column;
 }
 
-/* Container object which wraps an icon to ensure fluid transitions. */
+/* Container object which wraps an icon. Restyled as a frosted pastel card
+   to match the in-game menu's rounded card DA. Each icon gets its own
+   pastel accent (--accent) used on hover for the border/glow/icon color. */
 .mediaContainer {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 37px;
+    width: 36px;
+    height: 36px;
+    margin: 3px 0px;
+    border-radius: 10px;
+    /* Darker frosted glass so the card stays legible on both bright (sky)
+       and dark backgrounds, rather than vanishing on light photos. */
+    background: rgba(18, 18, 24, 0.34);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    -webkit-backdrop-filter: blur(7px);
+    backdrop-filter: blur(7px);
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.32);
+    transition: transform 0.18s ease, background 0.18s ease,
+                border-color 0.18s ease, box-shadow 0.18s ease;
+    position: relative;
+    box-sizing: border-box;
 }
+.mediaContainer:hover {
+    transform: translateY(-2px);
+    background: rgba(18, 18, 24, 0.5);
+    border-color: var(--accent, #ffffff);
+    box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.4),
+                0px 0px 14px -2px var(--accent, rgba(255, 255, 255, 0.4));
+}
+.mediaContainer:active {
+    transform: translateY(0px) scale(0.96);
+}
+
+/* Per-icon pastel accents (mirrors the in-game palette). */
+#settingsMediaContainer            { --accent: #f2a8c4; }
+#sfxMediaContainer                 { --accent: #8fdbc4; }
+.mediaContainer:has(#linkURL)      { --accent: #8fc9ef; }
+.mediaContainer:has(#boutiqueURL)  { --accent: #6ec6c0; }
+.mediaContainer:has(#discordURL)   { --accent: #8a9ef0; }
+.mediaContainer:has(#tiktokURL)    { --accent: #ff5c8a; }
 
 /* Divider bar between the external and internal icons. */
 .mediaDivider {
     height: 1px;
-    width: 14px;
-    background: rgb(255, 255, 255);
-    margin: 10px 0px;
+    width: 26px;
+    background: rgba(255, 255, 255, 0.35);
+    margin: 8px 0px;
 }
 
 /* Social media icon shared styles. */
 .mediaSVG {
     fill: #ffffff;
-    height: 22px;
-    transition: 0.25s ease;
+    height: 20px;
+    transition: fill 0.18s ease, stroke 0.18s ease;
     cursor: pointer;
-    width: 35px;
+    width: 24px;
 }
-.mediaSVG:hover,
-.mediaURL:focus .mediaSVG,
-.mediaSVG:active {
-    height: 30px;
+.mediaContainer:hover .mediaSVG {
+    fill: var(--accent, #ffffff);
 }
 
-/* Social media URL shared styles. */
+/* Social media URL shared styles: fill the whole card so the click target
+   matches the card, not just the glyph. */
 .mediaURL {
     outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
 }
 
-/* Internal media button shared styles. */
+/* Internal media button shared styles: also fills the whole card. */
 .mediaButton {
     background: none;
     border: none;
     padding: 0px;
     display: flex;
     align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    cursor: pointer;
     outline: none;
 }
 
@@ -3104,15 +3189,14 @@ input:checked + .toggleSwitchSlider:before {
     position: relative;
 }
 
-/* Settings icon colors. */
+/* Settings icon colors. The gear is a solid silhouette, so it must be
+   filled (not just stroked) — otherwise its interior shows the dark card
+   through it. Hover color comes from the generic .mediaSVG fill rule. */
 #settingsSVG {
-    stroke: #ffffff;
-    height: 15px;
-}
-.mediaButton:hover #settingsSVG,
-.mediaButton:focus #settingsSVG,
-.mediaButton:active #settingsSVG {
-    height: 23px;
+    fill: #ffffff;
+    stroke: none;
+    height: 20px;
+    transition: fill 0.18s ease;
 }
 
 /* Settings tooltip styles. */
@@ -3149,32 +3233,59 @@ input:checked + .toggleSwitchSlider:before {
     transition-delay:0s;
 }
 
-/* Boutique icon colors. */
-#boutiqueSVG:hover,
-#boutiqueURL:focus #boutiqueSVG {
-    fill: #f39c12;
+/* Sound toggle icon colors (stroke-based, overrides the fill:#ffffff from
+   .mediaSVG since this icon is a hollow speaker glyph, not a solid shape). */
+#sfxSVG {
+    fill: none;
+    stroke: #ffffff;
+    height: 19px;
+    width: 19px;
+    transition: stroke 0.18s ease;
 }
-#boutiqueSVG:active {
-    fill: #d35400;
+.mediaContainer:hover #sfxSVG {
+    stroke: var(--accent, #ffffff);
 }
-
-/* TikTok icon colors. */
-#tiktokSVG:hover,
-#tiktokURL:focus #tiktokSVG {
-    fill: #ff0050;
-}
-#tiktokSVG:active {
-    fill: #00f2ea;
+#sfxToggleButton.sfx-muted #sfxSVG {
+    stroke: #e57373;
 }
 
-/* Discord icon colors. */
-#discordSVG:hover,
-#discordURL:focus #discordSVG {
-    fill: #7288d9;
+/* Sound toggle tooltip styles. */
+#sfxTooltip {
+    visibility: hidden;
+    opacity: 0;
+    width: 75px;
+    height: 20px;
+    background-color: rgba(0, 0, 0, 0.75);
+    text-align: center;
+    border-radius: 4px;
+    position: absolute;
+    z-index: 1;
+    right: 130%;
+    font-size: 12px;
+    line-height: 20px;
+    transition: visibility 0s linear 0.25s, opacity 0.25s ease;
 }
-#discordSVG:active {
-    fill: #657ac4;
+#sfxTooltip::after {
+    content: " ";
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent transparent rgba(0, 0, 0, 0.75);
 }
+.mediaButton:hover #sfxTooltip,
+.mediaButton:focus #sfxTooltip,
+.mediaButton:active #sfxTooltip {
+    visibility: visible;
+    opacity: 1;
+    transition-delay:0s;
+}
+
+/* Per-icon hover colors are now driven by each card's --accent
+   (see .mediaContainer:hover .mediaSVG above), which keeps the whole
+   icon column consistent with the in-game pastel card palette. */
 
 /*******************************************************************************
  *                                                                             *
@@ -3187,7 +3298,7 @@ input:checked + .toggleSwitchSlider:before {
     font-size: 9px;
     letter-spacing: 1px;
     font-weight: bold;
-    text-shadow: 0px 0px 0px #bebcbb;
+    text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 /* Divider used on the bottom of the landing view. */
@@ -3203,10 +3314,20 @@ input:checked + .toggleSwitchSlider:before {
 * Landing View (Bottom Styles) | Left Content
 * * */
 
-/* Maintains maximum width on the status bar. */
+/* Maintains maximum width on the status bar. Styled as a small modern
+   chip so it reads as a distinct status indicator over the background art. */
 #server_status_wrapper {
     display: inline-flex;
-    width: 75px;
+    align-items: center;
+    width: auto;
+    white-space: nowrap;
+    background: rgba(255, 255, 255, 0.09);
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.28);
+    border-radius: 12px;
+    padding: 6px 14px;
 }
 
 /* Span which displays the player count of the selected server. */
@@ -3389,53 +3510,81 @@ input:checked + .toggleSwitchSlider:before {
 * Landing View (Bottom Styles) | Right Content
 * * */
 
-/* Main launch content container. */
+/* Main launch content container: a normal, normal-flow floating pill
+   (not a fixed full-screen layer). Keeping it in the regular flow means
+   landing.js's progress-bar positioning math (based on this element's and
+   #launch_button's real bounding boxes) works exactly as designed. */
 #landingContainer > #lower > #center #launch_content {
     position: relative;
-    top: -50px; /* remonté précédemment */
     display: inline-flex;
-    align-items: center;
-    margin-bottom: 10px;
-    z-index: 600; /* ensure play stays above centered news */
+    z-index: 5;
 }
 
-/* The launch button. */
+/* The launch button uses a cropped version of the "Jouer a CobbleHub" art
+   (background thumbnail removed, see btn_play_idle_cropped.png) so it reads
+   as a clean modern pill CTA rather than a screenshot card. */
 #launch_button {
-    background: none;
+    background: url('../images/btn_play_idle_cropped.png') no-repeat center center;
+    background-size: contain;
     border: none;
     cursor: pointer;
-    font-weight: 900;
-    letter-spacing: 2px;
-    text-shadow: 0px 0px 0px #bebcbb;
-    font-size: 28px;
+    width: 340px;
+    height: 39px;
     padding: 0px;
-    transition: 0.25s ease;
+    transition: 0.15s ease;
     outline: none;
+    font-size: 0;
+    text-indent: -9999px;
+    filter: drop-shadow(0px 4px 10px rgba(0, 0, 0, 0.4));
 }
 #launch_button:hover,
 #launch_button:focus {
-    text-shadow: 0px 0px 20px #fff, 0px 0px 20px #fff;
+    transform: scale(1.05);
+    filter: drop-shadow(0px 6px 14px rgba(0, 0, 0, 0.5)) brightness(1.08);
 }
 #launch_button:active {
-    color: #c7c7c7;
-    text-shadow: 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7;
+    transform: scale(0.98);
+    filter: drop-shadow(0px 2px 6px rgba(0, 0, 0, 0.4)) brightness(0.95);
 }
 #launch_button:disabled {
-    color: #c7c7c7;
     cursor: default;
     pointer-events: none;
+    opacity: 0.6;
 }
 
-/* Launch details main container, hidden until launch processing begins. */
+/* Launch details main container, hidden until launch processing begins.
+   Wrapped as a frosted glass pill so the progress readout matches the
+   icon cards / server chip DA instead of floating over the background. */
 #launch_details {
-    position: relative;
-    top: 25px;
+    /* Normal-flow inline pill that shrinks to its content; #center's flexbox
+       centers it exactly where the play button was (the JS no longer forces
+       an absolute position or width). */
     display: none;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    padding: 8px 20px;
+    border-radius: 14px;
+    background: rgba(18, 18, 24, 0.34);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    -webkit-backdrop-filter: blur(7px);
+    backdrop-filter: blur(7px);
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.32);
+    box-sizing: border-box;
 }
- 
+
 /* Left side of launch details container, displays percentage and a divider. */
 #launch_details_left {
     display: flex;
+    align-items: center;
+}
+
+/* Tighter divider inside the download pill so the label and progress sit
+   as a compact centered group rather than spread across the card. */
+#launch_details .bot_divider {
+    height: 20px;
+    margin-left: 12px;
+    margin-right: 12px;
 }
 
 /* Span which displays percentage complete. */
@@ -3458,21 +3607,31 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Button which opens the server selection view. */
 #server_selection_button {
-    background: none;
+    background: url('../images/btn_mp_idlev2.png') no-repeat center center;
+    background-size: contain;
     border: none;
     outline: none;
     cursor: pointer;
-    line-height: 24px;
+    width: 163px;
+    height: 80px;
     padding: 0px;
-    transition: 0.25s ease;
+    transition: 0.15s ease;
+    font-size: 0;
+    text-indent: -9999px;
+    overflow: hidden;
 }
 #server_selection_button:hover,
 #server_selection_button:focus {
-    text-shadow: 0px 0px 20px #fff, 0px 0px 20px #fff, 0px 0px 20px #fff;
+    background-image: url('../images/btn_mp_hoverv2.png');
+    transform: scale(1.05);
 }
 #server_selection_button:active {
-    color: #c7c7c7;
-    text-shadow: 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7;
+    transform: scale(0.97);
+}
+
+/* Hide the text divider between the play/server pill buttons. */
+#landingContainer > #lower > #center #launch_content .bot_divider {
+    display: none;
 }
 
 /* Progress bar styles. */
@@ -3622,6 +3781,66 @@ input:checked + .toggleSwitchSlider:before {
 }
 #overlayDismiss:active {
     color: rgba(165, 165, 165, 0.75);
+}
+
+/* * *
+* Overlay View (Quit Confirmation Content)
+* * */
+
+/* Quit confirmation panel, styled with the CobbleHub confirm-dialog art. */
+/* Sized to the exact aspect ratio of bg_confirm_quit_1.png (865x256) so
+   background-size:cover never letterboxes or misaligns the button row. */
+#quitConfirmContent {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    width: 480px;
+    height: 142px;
+    box-sizing: border-box;
+    padding-bottom: 22px;
+    background: url('../images/bg_confirm_quit_1.png') no-repeat center center;
+    background-size: cover;
+    text-align: center;
+}
+
+#quitConfirmActionContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 16px;
+}
+
+#quitConfirmYes,
+#quitConfirmNo {
+    border: none;
+    outline: none;
+    cursor: pointer;
+    width: 130px;
+    height: 25px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+    transition: 0.15s ease;
+}
+
+#quitConfirmYes {
+    background-image: url('../images/btn_confirm_yes_0.png');
+}
+#quitConfirmYes:hover,
+#quitConfirmYes:focus {
+    background-image: url('../images/btn_confirm_yes_1.png');
+    transform: scale(1.05);
+}
+
+#quitConfirmNo {
+    background-image: url('../images/btn_confirm_no_0.png');
+}
+#quitConfirmNo:hover,
+#quitConfirmNo:focus {
+    background-image: url('../images/btn_confirm_no_1.png');
+    transform: scale(1.05);
 }
 
 /* * *
@@ -3925,6 +4144,8 @@ input:checked + .toggleSwitchSlider:before {
     justify-content: center;
     width: 100%;
     height: calc(100% - 22px);
+    background: url('../images/load.png') no-repeat center center;
+    background-size: cover;
 }
 
 /* Loading content container. */
@@ -3946,9 +4167,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Stationary image for the spinner. */
 #loadCenterImage {
-    position: absolute;
-    width: 277px;
-    height: auto;
+    display: none;
 }
 
 /* Rotating image for the spinner. */

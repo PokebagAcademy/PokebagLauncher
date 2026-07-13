@@ -50,42 +50,16 @@ const loggerLanding = LoggerUtil.getLogger('Landing')
  * @param {boolean} loading True if the loading area should be shown, otherwise false.
  */
 function toggleLaunchArea(loading){
+    // Simple swap: the launch pill and the details pill occupy the same spot
+    // in the normal flow, so #center's flexbox centers whichever one is shown.
+    // No manual absolute positioning / width math needed (that was fragile and
+    // left the content hugging the left of an oversized card).
     if(loading){
-        // Position the launch details where the launch button currently is.
-        try {
-            const btn = document.getElementById('launch_button')
-            const container = document.getElementById('landingContainer')
-            const btnRect = btn.getBoundingClientRect()
-            const containerRect = container.getBoundingClientRect()
-
-            // Compute coordinates relative to landing container.
-            const left = btnRect.left - containerRect.left
-            const top = btnRect.top - containerRect.top
-
-            launch_details.style.position = 'absolute'
-            launch_details.style.left = left + 'px'
-            // place slightly above the button to align visually
-            launch_details.style.top = (top - 10) + 'px'
-            launch_details.style.zIndex = 700
-            // Match width to the launch content area for a neat transition.
-            launch_details.style.width = launch_content.getBoundingClientRect().width + 'px'
-        } catch (err) {
-            // Fallback to default if positioning calculation fails.
-            launch_details.style.position = 'relative'
-            launch_details.style.top = '25px'
-        }
-
         launch_details.style.display = 'flex'
         launch_content.style.display = 'none'
     } else {
-        // Restore default layout values.
         launch_details.style.display = 'none'
         launch_content.style.display = 'inline-flex'
-        launch_details.style.position = 'relative'
-        launch_details.style.left = ''
-        launch_details.style.top = '25px'
-        launch_details.style.width = ''
-        launch_details.style.zIndex = ''
     }
 }
 
@@ -206,6 +180,19 @@ server_selection_button.onclick = async e => {
     await toggleServerSelection(true)
 }
 
+// Quit button with confirmation dialog.
+const quit_button = document.getElementById('quit_button')
+quit_button.onclick = e => {
+    e.target.blur()
+    toggleOverlay(true, false, 'quitConfirmContent')
+    document.getElementById('quitConfirmYes').onclick = () => {
+        remote.app.quit()
+    }
+    document.getElementById('quitConfirmNo').onclick = () => {
+        toggleOverlay(false)
+    }
+}
+
 // Update Mojang Status Color
 const refreshMojangStatuses = async function(){
     loggerLanding.info('Refreshing Mojang Statuses..')
@@ -260,9 +247,12 @@ const refreshMojangStatuses = async function(){
         }
     }
     
-    document.getElementById('mojangStatusEssentialContainer').innerHTML = tooltipEssentialHTML
-    document.getElementById('mojangStatusNonEssentialContainer').innerHTML = tooltipNonEssentialHTML
-    document.getElementById('mojang_status_icon').style.color = MojangRestAPI.statusToHex(status)
+    const essentialContainer = document.getElementById('mojangStatusEssentialContainer')
+    const nonEssentialContainer = document.getElementById('mojangStatusNonEssentialContainer')
+    const statusIcon = document.getElementById('mojang_status_icon')
+    if(essentialContainer != null) essentialContainer.innerHTML = tooltipEssentialHTML
+    if(nonEssentialContainer != null) nonEssentialContainer.innerHTML = tooltipNonEssentialHTML
+    if(statusIcon != null) statusIcon.style.color = MojangRestAPI.statusToHex(status)
 }
 
 const refreshServerStatus = async (fade = false) => {

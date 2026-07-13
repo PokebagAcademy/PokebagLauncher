@@ -1,6 +1,6 @@
-appId: 'pokebaglauncher'
-productName: 'PokeBag Launcher'
-artifactName: 'PokeBag-Launcher-setup-${version}.${ext}'
+appId: 'cobblehublauncher'
+productName: 'CobbleHub Launcher'
+artifactName: 'CobbleHub-setup-${version}.${ext}'
 
 copyright: 'Copyright © 2018-2026 Daniel Scalzi'
 
@@ -33,7 +33,7 @@ mac:
       arch:
         - 'x64'
         - 'arm64'
-  artifactName: 'PokeBag-Launcher-setup-${version}-${arch}.${ext}'
+  artifactName: 'CobbleHub-setup-${version}-${arch}.${ext}'
   category: 'public.app-category.games'
 
 # Linux Configuration
