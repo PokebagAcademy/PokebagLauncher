@@ -34,6 +34,13 @@ body, html, div {
     padding: 0px;
 }
 
+/* The news panel is parked at top:100%, below the fold, until it slides up.
+   Without this it stretches the body and leaves a stray scrollbar on the
+   landing view. Scrolling views (settings, news) clip inside themselves. */
+body, html {
+    overflow: hidden;
+}
+
 /* Reset p presets. */
 p {
     -webkit-margin-before: 0em;
