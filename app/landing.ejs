@@ -1,13 +1,13 @@
 <div id="landingContainer" style="display: none;">
     <div id="upper">
         <div id="left">
-            <div id="image_seal_container">
-                <img id="image_seal" src="assets/images/dec_brand_small.png"/>
-                <div id="updateAvailableTooltip"><%- lang('landing.updateAvailableTooltip') %></div>
-            </div>
         </div>
         <div id="content">
             <div id="center">
+                <div id="image_seal_container">
+                    <img id="image_seal" src="assets/images/logo-cobblehub.png"/>
+                    <div id="updateAvailableTooltip"><%- lang('landing.updateAvailableTooltip') %></div>
+                </div>
             </div>
         </div>
         <div id="right">
@@ -138,7 +138,9 @@
         </div>
         <div id="right">
             <div class="bot_wrapper">
-                <button id="quit_button" title="<%- lang('landing.quitButton') %>"></button>
+                <button id="quit_button">
+                    <div id="quitTooltip"><%- lang('landing.quitButton') %></div>
+                </button>
             </div>
         </div>
     </div>

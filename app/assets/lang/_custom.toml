@@ -4,10 +4,10 @@
 title = "CobbleHub"
 
 [ejs.landing]
-mediaWebsiteURL = "https://pokebag.fr/"
-mediaBoutiqueURL = "https://pokebag.fr/shop/categories/gems"
-mediaTikTokURL = "https://www.tiktok.com/@pokebag_academy"
-mediaDiscordURL = "https://discord.gg/rUsbKeBd9w"
+mediaWebsiteURL = "https://cobblehub.fr/"
+mediaBoutiqueURL = "https://cobblehub.fr/shop/categories/gems"
+mediaTikTokURL = "https://www.tiktok.com/@cobblehub.fr"
+mediaDiscordURL = "https://discord.gg/qhBfw3keMf"
 
 
 [ejs.settings]

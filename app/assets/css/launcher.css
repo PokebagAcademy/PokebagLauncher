@@ -34,6 +34,13 @@ body, html, div {
     padding: 0px;
 }
 
+/* The news panel is parked at top:100%, below the fold, until it slides up.
+   Without this it stretches the body and leaves a stray scrollbar on the
+   landing view. Scrolling views (settings, news) clip inside themselves. */
+body, html {
+    overflow: hidden;
+}
+
 /* Reset p presets. */
 p {
     -webkit-margin-before: 0em;
@@ -2536,17 +2543,19 @@ input:checked + .toggleSwitchSlider:before {
     box-sizing: border-box;
 }
 
-/* Quit button (bottom right of landing screen). Uses a tightly-cropped
-   version of the art (the source PNG had a large asymmetric transparent
-   margin that made the icon look off-center in the button box). */
+/* Quit button (bottom right of landing screen). Both states are cropped to the
+   round badge alone on an identical square canvas — the source art had the
+   badge at different offsets inside an opaque violet square, so the icon both
+   showed that square and jumped sideways on hover. */
 #quit_button {
+    position: relative;
     background: url('../images/btn_quit_0_cropped.png') no-repeat center center;
     background-size: contain;
     border: none;
     outline: none;
     cursor: pointer;
     width: 70px;
-    height: 76px;
+    height: 70px;
     padding: 0px;
     transition: 0.15s ease;
     filter: drop-shadow(0px 4px 10px rgba(0, 0, 0, 0.4));
@@ -2558,6 +2567,45 @@ input:checked + .toggleSwitchSlider:before {
 }
 #quit_button:active {
     transform: scale(0.97);
+}
+
+/* Styled tooltip, matching the settings/sfx buttons — the native title
+   attribute rendered as a stray white box over the artwork. */
+#quitTooltip {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    width: 75px;
+    height: 20px;
+    background-color: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    text-align: center;
+    border-radius: 4px;
+    position: absolute;
+    z-index: 1;
+    right: 115%;
+    top: 50%;
+    margin-top: -10px;
+    font-family: 'Avenir Medium';
+    font-size: 12px;
+    line-height: 20px;
+    transition: visibility 0s linear 0.25s, opacity 0.25s ease;
+}
+#quitTooltip::after {
+    content: " ";
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent transparent rgba(0, 0, 0, 0.75);
+}
+#quit_button:hover #quitTooltip,
+#quit_button:focus #quitTooltip {
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 0s;
 }
 
 /*******************************************************************************
@@ -2889,25 +2937,34 @@ input:checked + .toggleSwitchSlider:before {
 * Landing View (Top Styles) | Left Content
 * * */
 
-/* Brand wordmark (dec_brand_small.png), wide aspect ratio. */
-#image_seal {
-    height: auto;
-    width: 165px;
-    position: relative;
-    filter: drop-shadow(0px 2px 6px rgba(0, 0, 0, 0.5));
+/* Centre the brand wordmark in the upper area — it used to sit small in the
+   top-left corner, which left the middle of the landing view empty. */
+#landingContainer > #upper > #content > #center {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
 }
 
-/* Logo container styles. Matches #rightContainer's top:50px offset and
-   the 70px avatar height so the wordmark and avatar sit on the same
-   horizontal line. */
+/* Brand wordmark (logo-cobblehub.png), wide aspect ratio. */
+#image_seal {
+    height: auto;
+    width: 100%;
+    position: relative;
+    filter: drop-shadow(0px 4px 14px rgba(0, 0, 0, 0.55));
+}
+
+/* Logo container styles. */
 #image_seal_container {
     position: relative;
     display: flex;
     align-items: center;
-    height: 70px;
-    width: 165px;
-    margin-top: 50px;
-    margin-left: 25px;
+    justify-content: center;
+    width: 46%;
+    min-width: 320px;
+    max-width: 620px;
+    margin-bottom: 40px;
 }
 
 /* Logo container styles w/ update. */
@@ -2946,7 +3003,8 @@ input:checked + .toggleSwitchSlider:before {
     position: absolute;
     z-index: 1;
     top: 115%;
-    left: -17.5px;
+    left: 50%;
+    transform: translateX(-50%);
     font-family: 'Avenir Medium';
     font-size: 12px;
     transition: visibility 0s linear 0.25s, opacity 0.25s ease;
@@ -3812,13 +3870,15 @@ input:checked + .toggleSwitchSlider:before {
     gap: 16px;
 }
 
+/* The art is cropped to the pill itself (the source PNGs carried an opaque
+   white halo), so the box below matches the pill's own 362x58 ratio. */
 #quitConfirmYes,
 #quitConfirmNo {
     border: none;
     outline: none;
     cursor: pointer;
     width: 130px;
-    height: 25px;
+    height: 21px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center center;
@@ -4341,7 +4401,7 @@ input:checked + .toggleSwitchSlider:before {
 #loginImageSeal {
     height: auto !important;
     max-height: 90px;
-    width: 220px;
+    width: 300px;
     object-fit: contain;
     background: none !important;
     box-shadow: none !important;
