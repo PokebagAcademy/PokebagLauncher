@@ -2450,6 +2450,9 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Main content container. */
 #landingContainer {
+    --rail: clamp(108px, 18vh, 152px);
+    --quit: clamp(66px, 11vh, 104px);
+    --avatar: clamp(54px, 9vh, 76px);
     height: 100%;
     position: relative;
     transition: background 2s ease;
@@ -2539,7 +2542,7 @@ input:checked + .toggleSwitchSlider:before {
     justify-content: flex-end;
     /* Matches the avatar's right inset (#upper > #right) so the quit
        button's right edge lines up exactly with the avatar's right edge. */
-    padding-right: 80px;
+    padding-right: clamp(24px, 4.2vw, 80px);
     box-sizing: border-box;
 }
 
@@ -2554,8 +2557,9 @@ input:checked + .toggleSwitchSlider:before {
     border: none;
     outline: none;
     cursor: pointer;
-    width: 70px;
-    height: 70px;
+    width: var(--quit);
+    height: var(--quit);
+    margin-right: calc((var(--rail) - var(--quit)) / 2);
     padding: 0px;
     transition: 0.15s ease;
     filter: drop-shadow(0px 4px 10px rgba(0, 0, 0, 0.4));
@@ -2937,6 +2941,19 @@ input:checked + .toggleSwitchSlider:before {
 * Landing View (Top Styles) | Left Content
 * * */
 
+/* Cobblemon hex mark, pinned in the top-left corner. Aligned to the same
+   50px top offset as the avatar on the opposite side. */
+#landingContainer > #upper > #left {
+    align-items: flex-start;
+}
+#corner_logo {
+    width: clamp(50px, 9.8vh, 81px);
+    height: auto;
+    margin-top: clamp(12px, 3vh, 25px);
+    margin-left: clamp(10px, 1.5vw, 15px);
+    filter: drop-shadow(0px 2px 6px rgba(0, 0, 0, 0.5));
+}
+
 /* Centre the brand wordmark in the upper area — it used to sit small in the
    top-left corner, which left the middle of the landing view empty. */
 #landingContainer > #upper > #content > #center {
@@ -2958,13 +2975,16 @@ input:checked + .toggleSwitchSlider:before {
 /* Logo container styles. */
 #image_seal_container {
     position: relative;
+    /* Nudged below the optical centre: the artwork's "BIENVENUE!" tail makes
+       a strictly centred block read as too high. Viewport-relative so the
+       offset holds at any window size. */
+    top: clamp(18px, 6vh, 52px);
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 46%;
-    min-width: 320px;
-    max-width: 620px;
-    margin-bottom: 40px;
+    width: min(80%, 92vw);
+    min-width: 0;
+    max-width: 1000px;
 }
 
 /* Logo container styles w/ update. */
@@ -3066,13 +3086,17 @@ input:checked + .toggleSwitchSlider:before {
     display: flex;
     flex-direction: column;
     position: relative;
-    top: 50px;
-    align-items: flex-start;
-    height: calc(100% - 50px);
+    top: clamp(24px, 6vh, 50px);
+    width: 100%;
+    align-items: flex-end;
+    padding-right: clamp(24px, 4.2vw, 80px);
+    box-sizing: border-box;
+    height: calc(100% - clamp(24px, 6vh, 50px));
 }
 
 /* Right hand user content container. */
 #user_content {
+    padding-right: calc((var(--rail) - var(--avatar)) / 2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -3086,8 +3110,8 @@ input:checked + .toggleSwitchSlider:before {
     border: 2px solid rgba(255, 255, 255, 0.55);
     box-sizing: border-box;
     background: rgba(1, 2, 1, 0.5);
-    height: 70px;
-    width: 70px;
+    height: var(--avatar);
+    width: var(--avatar);
     box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.45);
     transition: border-color 0.18s ease, box-shadow 0.18s ease;
     overflow: hidden;
@@ -3126,13 +3150,13 @@ input:checked + .toggleSwitchSlider:before {
 
 /* User profile name text. */
 #user_text {
-    font-size: 12px;
-    min-width: 135px;
+    font-size: clamp(11px, 1.5vh, 17px);
+    min-width: clamp(90px, 12vw, 190px);
     font-weight: 900;
     letter-spacing: 1px;
     text-shadow: 0px 0px 20px black;
     position: absolute;
-    right: 95px;
+    right: calc((var(--rail) + var(--avatar)) / 2 + 16px);
     text-align: right;
     -webkit-user-select: initial;
 }
@@ -3144,7 +3168,7 @@ input:checked + .toggleSwitchSlider:before {
     flex-direction: column;
     margin-top: 25px;
     height: calc(100% - 95px);
-    width: 70px;
+    width: var(--rail);
     align-items: center;
 }
 
@@ -3154,47 +3178,51 @@ input:checked + .toggleSwitchSlider:before {
     flex-direction: column;
 }
 
-/* Container object which wraps an icon. Restyled as a frosted pastel card
-   to match the in-game menu's rounded card DA. Each icon gets its own
-   pastel accent (--accent) used on hover for the border/glow/icon color. */
+/* Round off-white badge holding an icon — same DA as the quit button:
+   solid #f8f8f8 disc, violet glyph, soft drop shadow, scale on hover.
+   Colours are sampled from the pack's own button art rather than invented. */
 .mediaContainer {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 36px;
-    height: 36px;
-    margin: 3px 0px;
-    border-radius: 10px;
-    /* Darker frosted glass so the card stays legible on both bright (sky)
-       and dark backgrounds, rather than vanishing on light photos. */
-    background: rgba(18, 18, 24, 0.34);
-    border: 1px solid rgba(255, 255, 255, 0.28);
-    -webkit-backdrop-filter: blur(7px);
-    backdrop-filter: blur(7px);
-    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.32);
-    transition: transform 0.18s ease, background 0.18s ease,
-                border-color 0.18s ease, box-shadow 0.18s ease;
+    width: clamp(32px, 5.5vh, 84px);
+    height: clamp(32px, 5.5vh, 84px);
+    margin: clamp(3px, 0.5vh, 10px) 0px;
+    border-radius: 50%;
+    /* Solid pastel disc in the icon's own accent, like the in-game menu's
+       coloured buttons — with the same top highlight / bottom shade that
+       gives btn_play its slight relief. */
+    background: var(--accent, #9060a0);
+    border: none;
+    box-shadow: inset 0px 2px 0px rgba(255, 255, 255, 0.45),
+                inset 0px -2px 0px rgba(0, 0, 0, 0.14),
+                0px 3px 9px rgba(0, 0, 0, 0.30);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
     position: relative;
     box-sizing: border-box;
 }
 .mediaContainer:hover {
-    transform: translateY(-2px);
-    background: rgba(18, 18, 24, 0.5);
-    border-color: var(--accent, #ffffff);
-    box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.4),
-                0px 0px 14px -2px var(--accent, rgba(255, 255, 255, 0.4));
+    transform: scale(1.1);
+    filter: brightness(1.12);
+    box-shadow: inset 0px 2px 0px rgba(255, 255, 255, 0.55),
+                inset 0px -2px 0px rgba(0, 0, 0, 0.14),
+                0px 5px 14px rgba(0, 0, 0, 0.38);
 }
 .mediaContainer:active {
-    transform: translateY(0px) scale(0.96);
+    transform: scale(0.96);
+    box-shadow: inset 0px 2px 0px rgba(0, 0, 0, 0.12),
+                0px 2px 5px rgba(0, 0, 0, 0.32);
 }
 
-/* Per-icon pastel accents (mirrors the in-game palette). */
-#settingsMediaContainer            { --accent: #f2a8c4; }
-#sfxMediaContainer                 { --accent: #8fdbc4; }
-.mediaContainer:has(#linkURL)      { --accent: #8fc9ef; }
-.mediaContainer:has(#boutiqueURL)  { --accent: #6ec6c0; }
-.mediaContainer:has(#discordURL)   { --accent: #8a9ef0; }
-.mediaContainer:has(#tiktokURL)    { --accent: #ff5c8a; }
+/* Per-icon accent, revealed on hover. Taken from the pack's palette:
+   violet (quit), mint (options/confirm panel), coral (play/multiplayer),
+   periwinkle (yes button), blue-violet (news). */
+#settingsMediaContainer            { --accent: #9060a0; }
+#sfxMediaContainer                 { --accent: #58b098; }
+.mediaContainer:has(#linkURL)      { --accent: #606090; }
+.mediaContainer:has(#boutiqueURL)  { --accent: #60b098; }
+.mediaContainer:has(#discordURL)   { --accent: #7d78b8; }
+.mediaContainer:has(#tiktokURL)    { --accent: #d06868; }
 
 /* Divider bar between the external and internal icons. */
 .mediaDivider {
@@ -3206,14 +3234,14 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Social media icon shared styles. */
 .mediaSVG {
-    fill: #ffffff;
-    height: 20px;
+    fill: #f8f8f8;
+    height: clamp(18px, 3vh, 46px);
     transition: fill 0.18s ease, stroke 0.18s ease;
     cursor: pointer;
-    width: 24px;
+    width: clamp(21px, 3.5vh, 54px);
 }
 .mediaContainer:hover .mediaSVG {
-    fill: var(--accent, #ffffff);
+    fill: #ffffff;
 }
 
 /* Social media URL shared styles: fill the whole card so the click target
@@ -3238,7 +3266,7 @@ input:checked + .toggleSwitchSlider:before {
     justify-content: center;
     width: 100%;
     height: 100%;
-    border-radius: 12px;
+    border-radius:  50%;
     cursor: pointer;
     outline: none;
 }
@@ -3251,9 +3279,8 @@ input:checked + .toggleSwitchSlider:before {
    filled (not just stroked) — otherwise its interior shows the dark card
    through it. Hover color comes from the generic .mediaSVG fill rule. */
 #settingsSVG {
-    fill: #ffffff;
+    fill: #f8f8f8;
     stroke: none;
-    height: 20px;
     transition: fill 0.18s ease;
 }
 
@@ -3295,13 +3322,13 @@ input:checked + .toggleSwitchSlider:before {
    .mediaSVG since this icon is a hollow speaker glyph, not a solid shape). */
 #sfxSVG {
     fill: none;
-    stroke: #ffffff;
-    height: 19px;
-    width: 19px;
+    stroke: #f8f8f8;
+    height: clamp(17px, 2.9vh, 46px);
+    width: clamp(17px, 2.9vh, 84px);
     transition: stroke 0.18s ease;
 }
 .mediaContainer:hover #sfxSVG {
-    stroke: var(--accent, #ffffff);
+    stroke: #ffffff;
 }
 #sfxToggleButton.sfx-muted #sfxSVG {
     stroke: #e57373;
@@ -3379,21 +3406,25 @@ input:checked + .toggleSwitchSlider:before {
     align-items: center;
     width: auto;
     white-space: nowrap;
-    background: rgba(255, 255, 255, 0.09);
-    border: 1px solid rgba(255, 255, 255, 0.20);
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.28);
-    border-radius: 12px;
-    padding: 6px 14px;
+    background: #f8f8f8;
+    border: none;
+    box-shadow: 0px 3px 9px rgba(0, 0, 0, 0.30);
+    border-radius: 999px;
+    padding: clamp(7px, 1.3vh, 14px) clamp(15px, 2.4vw, 32px);
+}
+
+#landingPlayerLabel {
+    color: #4a3a52;
+    font-size: clamp(9px, 1.7vh, 18px);
+    text-shadow: none;
 }
 
 /* Span which displays the player count of the selected server. */
 #player_count {
-    color: #949494;
-    font-size: 8px;
+    color: #9060a0;
+    font-size: clamp(8px, 1.5vh, 16px);
     font-weight: 900;
-    text-shadow: 0px 0px 20px #949494;
+    letter-spacing: 1px;
     margin-left: 10px;
 }
 
@@ -3583,11 +3614,17 @@ input:checked + .toggleSwitchSlider:before {
    as a clean modern pill CTA rather than a screenshot card. */
 #launch_button {
     background: url('../images/btn_play_idle_cropped.png') no-repeat center center;
-    background-size: contain;
+    /* Exact fill rather than `contain`: the art is 677x78 against a 340x39 box,
+       so the 0.4% stretch is invisible but guarantees the rounded corners clip
+       the artwork itself instead of leaving square edges inside the box. */
+    background-size: 100% 100%;
+    /* Pill shape, to match the round quit/media buttons and the status pill. */
+    border-radius: 999px;
     border: none;
     cursor: pointer;
-    width: 340px;
-    height: 39px;
+    width: clamp(300px, 46vw, 680px);
+    aspect-ratio: 677 / 78;
+    height: auto;
     padding: 0px;
     transition: 0.15s ease;
     outline: none;
