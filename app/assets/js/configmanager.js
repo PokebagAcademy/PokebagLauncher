@@ -99,7 +99,8 @@ const DEFAULT_CONFIG = {
     selectedAccount: null,
     authenticationDatabase: {},
     modConfigurations: [],
-    javaConfig: {}
+    javaConfig: {},
+    syncedConfigHashes: {}
 }
 
 let config = null
@@ -203,6 +204,29 @@ exports.isFirstLaunch = function(){
  */
 exports.getTempNativeFolder = function(){
     return 'WCNatives'
+}
+
+/**
+ * Retrieve the last known hash of a synced config file (i.e. the hash of
+ * the content the launcher itself last delivered for that file). Used to
+ * detect whether a player has manually edited a synced config since then,
+ * so it is not overwritten on the next launch.
+ *
+ * @param {string} key A unique key identifying the config file (e.g. `${serverId}:${moduleId}`).
+ * @returns {string|undefined} The last known hash, or undefined if never recorded.
+ */
+exports.getSyncedConfigHash = function(key){
+    return config.syncedConfigHashes[key]
+}
+
+/**
+ * Record the hash of a synced config file's officially delivered content.
+ *
+ * @param {string} key A unique key identifying the config file (e.g. `${serverId}:${moduleId}`).
+ * @param {string} hash The hash to record.
+ */
+exports.setSyncedConfigHash = function(key, hash){
+    config.syncedConfigHashes[key] = hash
 }
 
 // System Settings (Unconfigurable on UI)

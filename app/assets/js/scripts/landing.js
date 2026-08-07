@@ -2,7 +2,9 @@
  * Script for landing.ejs
  */
 // Requirements
+const fs                      = require('fs-extra')
 const { URL }                 = require('url')
+const { Type }                = require('helios-distribution-types')
 const {
     MojangRestAPI,
     getServerStatus
@@ -10,12 +12,14 @@ const {
 const {
     RestResponseStatus,
     isDisplayableError,
-    validateLocalFile
+    validateLocalFile,
+    calculateHash
 }                             = require('helios-core/common')
 const {
     FullRepair,
     DistributionIndexProcessor,
     MojangIndexProcessor,
+    HashAlgo,
     downloadFile
 }                             = require('helios-core/dl')
 const {
@@ -455,6 +459,98 @@ async function downloadJava(effectiveJavaOptions, launchAfter = true) {
 
 }
 
+/**
+ * Recursively collect every Type.File module (config files pushed by the
+ * distribution) declared for a server, including nested subModules.
+ *
+ * @param {Array} modules The modules to search (a HeliosServer's modules, or subModules).
+ * @param {Array} acc Accumulator, used internally for recursion.
+ * @returns {Array} The flat list of Type.File modules.
+ */
+function collectFileModules(modules, acc = []) {
+    for(const module of modules) {
+        if(module.rawModule.type === Type.File) {
+            acc.push(module)
+        }
+        if(module.hasSubModules()) {
+            collectFileModules(module.subModules, acc)
+        }
+    }
+    return acc
+}
+
+/**
+ * Before running the file repair, back up the content of any synced config
+ * file the player has manually edited since the last launch (i.e. its
+ * current hash no longer matches the hash we last delivered). This lets us
+ * restore those edits after the repair, so the repair's overwrite is
+ * effectively a no-op for files the player has customized.
+ *
+ * @param {Object} serv The HeliosServer instance for the selected server.
+ * @returns {Promise<Array>} A list of { key, path, backup, baselineHash } entries to restore/update after the repair.
+ */
+async function backupModifiedConfigs(serv) {
+    const fileModules = collectFileModules(serv.modules)
+    const protections = []
+
+    for(const module of fileModules) {
+        const key = `${serv.rawServer.id}:${module.rawModule.id}`
+        const filePath = module.getPath()
+
+        if(!await fs.pathExists(filePath)) {
+            continue
+        }
+
+        const localHash = await calculateHash(filePath, HashAlgo.MD5)
+        const knownHash = ConfigManager.getSyncedConfigHash(key)
+
+        if(knownHash == null) {
+            // First time we've seen this file. Accept its current content as the
+            // baseline going forward, and don't let this launch's repair touch it.
+            protections.push({ key, path: filePath, backup: await fs.readFile(filePath), baselineHash: localHash })
+        } else if(localHash !== knownHash) {
+            // Player has edited this file since we last synced it. Preserve it.
+            protections.push({ key, path: filePath, backup: await fs.readFile(filePath), baselineHash: knownHash })
+        }
+        // Otherwise the file still matches what we last delivered, so let the
+        // repair sync it normally (its hash will be recorded afterwards).
+    }
+
+    return protections
+}
+
+/**
+ * After the repair has run, restore any config the player had customized
+ * (undoing the repair's overwrite), and record the current hash of every
+ * config file that was allowed to sync normally so future launches can
+ * detect edits made from now on.
+ *
+ * @param {Object} serv The HeliosServer instance for the selected server.
+ * @param {Array} protections The list produced by backupModifiedConfigs.
+ */
+async function restoreModifiedConfigs(serv, protections) {
+    for(const { path: filePath, backup, baselineHash, key } of protections) {
+        await fs.writeFile(filePath, backup)
+        ConfigManager.setSyncedConfigHash(key, baselineHash)
+    }
+
+    const protectedKeys = new Set(protections.map(p => p.key))
+    const fileModules = collectFileModules(serv.modules)
+
+    for(const module of fileModules) {
+        const key = `${serv.rawServer.id}:${module.rawModule.id}`
+        if(protectedKeys.has(key)) {
+            continue
+        }
+        const filePath = module.getPath()
+        if(await fs.pathExists(filePath)) {
+            ConfigManager.setSyncedConfigHash(key, await calculateHash(filePath, HashAlgo.MD5))
+        }
+    }
+
+    ConfigManager.save()
+}
+
 // Keep reference to Minecraft Process
 let proc
 // Is DiscordRPC enabled
@@ -519,6 +615,13 @@ async function dlAsync(login = true) {
         }
     })
 
+    let configProtections = []
+    try {
+        configProtections = await backupModifiedConfigs(serv)
+    } catch(err) {
+        loggerLaunchSuite.error('Error while checking for player-modified config files.', err)
+    }
+
     loggerLaunchSuite.info('Validating files.')
     setLaunchDetails(Lang.queryJS('landing.dlAsync.validatingFileIntegrity'))
     let invalidFileCount = 0
@@ -532,7 +635,7 @@ async function dlAsync(login = true) {
         showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringFileVerificationTitle'), err.displayable || Lang.queryJS('landing.dlAsync.seeConsoleForDetails'))
         return
     }
-    
+
 
     if(invalidFileCount > 0) {
         loggerLaunchSuite.info('Downloading files.')
@@ -550,6 +653,12 @@ async function dlAsync(login = true) {
         }
     } else {
         loggerLaunchSuite.info('No invalid files, skipping download.')
+    }
+
+    try {
+        await restoreModifiedConfigs(serv, configProtections)
+    } catch(err) {
+        loggerLaunchSuite.error('Error while restoring player-modified config files.', err)
     }
 
     // Remove download bar.
